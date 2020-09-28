@@ -1,0 +1,18 @@
+name: TryalAI Push to Production Server
+
+on:
+  push:
+    branches: [ master ]
+jobs:
+  ship:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: login to github image repository
+      run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p ${{ secrets.GITHUB_TOKEN }} 
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag aip:latest
+    - name: tag docker image to repo repository
+      run: docker tag aip:latest docker.pkg.github.com/nergmada/aip-tools-2020/aip:latest
+    - name: push docker image to repo
+      run: docker push docker.pkg.github.com/nergmada/aip-tools-2020/aip:latest
