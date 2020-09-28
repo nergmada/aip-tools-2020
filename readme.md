@@ -18,7 +18,7 @@ This repo contains two `Dockerfile`s. Unless you are really familiar with Docker
 ### How to run planners using the `student.Dockerfile`
 Let's quickly go through the `student.Dockerfile` line by line
 
-`FROM docker.pkg.github.com/nergmada/aip-tools-2020/aip:latest`
+`FROM adamfgreen/aip2020:latest`
 
 This first line, pulls the latest image of the main Docker image created in `Dockerfile`. This is image is something I've created that automatically builds all the planners and planning tools you need and nearly instantly puts them at your disposal. **You won't need to change this line.**
 
@@ -48,7 +48,7 @@ Inside your `./input` folder, we assume you've put a domain pddl file called `do
 
 1. set `CMD` to be whatever planner you want to execute and whatever domain/problem file you want to run, that is located in `./input`
 
-2. Run `./build.sh`
+2. Run `./build.sh` (You need to do this every time you change the contents of `./input` or change `/bin` to target some other program)
 
 3. Run `./run.sh`
 
@@ -56,4 +56,24 @@ Inside your `./input` folder, we assume you've put a domain pddl file called `do
 
 ### Advice for Windows and Mac users
 
-You can install Docker on Windows and Mac. The commands located inside `./build,sh` `./run.sh` and `./stop.sh` will all be available on Windows and Mac too, but the scripts as provided here won't run. Instead, just execute them line by line manually.
+You can install Docker on Windows and Mac. The commands located inside `./build,sh`, `./run.sh` and `./stop.sh` will all be available on Windows and Mac too, but the scripts as provided here won't run. Instead, just execute them line by line manually.
+
+Please note that this part of the command `$(cat $(readlink -f VERSION))` just copies whatever the current version number is in the `VERSION` file. You can hard code it instead
+
+
+### Available Programs in /bin
+
+`/bin/optic` allows you to run OPTIC. OPTIC is a Temporal Numeric planner designed in the early 2010s. It's predecessors POPF and COLIN will most likely be covered in lectures.
+
+`/bin/metricff` allows you to run a flavour of FF called `MetricFF`. This is a classical planner which is a precursor to many modern search strategies.
+
+`/bin/fd` allows you to run `FD` or Fast Downward. This is a classical planner which is the technical and theoretical basis for many if not all modern classical planning systems
+
+`/bin/smtplan` allows you to run `SMTPlan+` a niche planner designed to handle expressive domains modelled in PDDL+ syntax.
+
+`/bin/enhsp` allows you to run `ENHSP` a planner designed to handle expressive domains, particularly those with non-linear continuous numeric effects
+
+`/bin/Validate` allows you to run `VAL`s `Validate` program. Validate is way to check the correctness of plans, independently of planners. Please not that `Validate` has a capital `V`
+
+
+
