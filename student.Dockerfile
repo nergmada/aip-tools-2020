@@ -1,5 +1,5 @@
 #Using the Planner image on my repo to get the base image 
-FROM docker.pkg.github.com/nergmada/aip-tools-2020/aip:latest
+FROM adamfgreen/aip2020:latest
 #Copy the input folder into the container and call it input e.g.
 # ./input on your computer > /input on the container
 COPY ./input /input
