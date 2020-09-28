@@ -1,5 +1,4 @@
-name: TryalAI Push to Production Server
-
+name: Create new docker image on package
 on:
   push:
     branches: [ master ]
