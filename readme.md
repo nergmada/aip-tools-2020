@@ -8,90 +8,52 @@ You're lucky enough to be on the AIP module at KCL in 2020, which means you've g
 
 ## Docker container of Planners
 
-This repo contains a `Dockerfile` which when built will allow you to run a plethora of planners on your very own machine. To get started with [docker](https://www.docker.com/get-started), you will need to install it on your machine! Please note that I have only provided scripts for `linux ubuntu 20.04`. These scripts will **probably** work on 16.04+, but most likely **will not** work on Mac or Windows.
+This repo contains two `Dockerfile`s. Unless you are really familiar with Docker you don't need to worry about the main `Dockerfile` instead, focus on `student.Dockerfile`. This guide will only look at `student.Dockerfile`.
 
-I cannot provide technical support for either Mac or Windows because I simply do not use either of them anymore. To learn how to execute equivalent docker commands on Windows or Mac please turn to stack overflow and google.
+### Prerequisites
 
-## What is docker
+- [Docker!](https://www.docker.com/)
 
-Docker is basically a way to run a Virtual Machine as a command line program, whilst having all the software you need on it ready to go. 
 
-Docker thinks of a virtual machine as an `image` an image is essential "this is what the machine should look like" for example it should have these things installed and these programs ready.
+### How to run planners using the `student.Dockerfile`
+Let's quickly go through the `student.Dockerfile` line by line
 
-When you use an `image` you create a `container`. A `container` is essentially a running version of that image, i.e. All Dell laptops come out the factory the same e.g. they have one `image` but when you start them up and use one, it changes because it's executing programs becoming a `container`. This is the same principle but virtual rather than physical.
+`FROM docker.pkg.github.com/nergmada/aip-tools-2020/aip:latest`
 
-We built the docker `image` for you, with all the planning software you need already built by the time you come to start your `container`. However, if you use this 
+This first line, pulls the latest image of the main Docker image created in `Dockerfile`. This is image is something I've created that automatically builds all the planners and planning tools you need and nearly instantly puts them at your disposal. **You won't need to change this line.**
 
-## Understanding the scripts (Please read carefully, this is for your benefit!)
+`COPY ./input /input`
 
-1. Build the docker image see the `./docker-build.sh` script. This will make an image tagged as `aip:0.1` or whatever the current version number is in the `VERSION` file. Double check the version file, to be sure.
+This tells docker to copy anything in the folder `./input` within this repo, into your container. We do this so that files, such as domains, problems and plans that are outside the container, can be copied into the container. In the `./input` folder of this repo, you should place any domains or problem files you wish to run, and any plans you wish to validate.
 
-2. Run the docker image see `./shell.sh`. I've copied the docker command I used and explained it below, note that you need to read this understand this if you want to do more advanced and clever things when running the planner
+`WORKDIR /input`
 
-`docker run -v "$PWD:$PWD" -w "$PWD" --name aipdocker -it aip:$(cat $(readlink -f VERSION)) "$@"`
+This tells docker to start by running in the input folder. When Docker copies the `./input` folder to `/input` it doesn't by default start you inside that folder. This command makes it so that when you run any commands inside docker, it'll start in this `/input` folder.
 
-`docker run` - the standard command used to run a built docker image. Imagine a the `aip` docker image we built in step 1 as an imaginary "ubuntu" computer, with all the planning software built and installed when we ran `./docker-build.sh`
+`CMD /bin/optic domain.pddl problem.pddl`
 
-`-v "$PWD:$PWD"` - Because a docker container is separate from your computer, you have to tell it what folders you want to allow it to access. $PWD is another way of saying the current directory you're running the script from, for example if you download this folder to your documents and open a command line, `$PWD` will be something like `/home/<your-name>/documents/aip-coursework-tools`. 
+This is the most important line, and the only line you'll need to modify. the `CMD` tells docker what to run, when this container is executed. In this case, we are running `domain.pddl` and `problem.pddl` on the planner `optic` which is located in `/bin`. 
 
-This command will essentially link up whatever folder you're in and put it on exactly the same path in the container. Note that on Windows and Mac `$PWD` may not work or may have a different name. 
+All planners and software you need are located in `/bin` I have listed what is available further down.
 
-`-w "$PWD"` - This tells docker than when you run the container, what folder you want to start in. Because in the previous part of the command we told it to copy whatever folder we're currently in and put it in exactly the same place inside the container as it was outside the container, this command says "Okay, now I want you to start the container in this folder". 
+By default this line is set to `/bin/optic` but if you want to run for example, `metricff` you'll need to switch this to `/bin/metricff`. 
 
-Again, similar to the previous part of the command, `$PWD` may or may not work for you on Windows or Mac.
+Inside your `./input` folder, we assume you've put a domain pddl file called `domain.pddl`. Let's say instead you put a domain called `driverlog.pddl`. You can change `domain.pddl` to `driverlog.pddl` to use the `driverlog.pddl` domain instead e.g.
 
-`--name aipdocker` This is to make cleaning up easier later. A name can be pretty much anything you want. We use it so that if the container gets out of control we can open another terminal and type `docker kill aipdocker`
+`CMD /bin/optic driverlog.pddl problem.pddl`
 
-`-it` Basically makes the experience interactive. Most containers aren't designed to run like a command line tool, instead they're designed to run servers and stuff and not really put anything on the command line. `-it` basically tells docker "Actually, whatever I tell you to do, I want to see the results on my CLI".
+**When you add domains to the input folder, you need to run build again**
 
-`aip:$(cat $(readlink -f VERSION))`, this is just a clever way to read whatever version number is in the file `VERSION` and automatically attach it to `aip:`. To be honest, you can hard code this value to whatever number is in the `VERSION` file. Just remember, if you or I change it later, you'll need to change the hard coded copy.
+### Quick steps (You should read the detailed explanation before following this)
 
-For Mac and Windows users, it's probably easier to hard code this value than find an equivalent command
+1. set `CMD` to be whatever planner you want to execute and whatever domain/problem file you want to run, that is located in `./input`
 
-`"$@"` This is a way just to carry everything you write after `./shell.sh` straight into the end. e.g. if I write `./shell.sh a b c d e` then `"$@"` is `a b c d e` and in the full command it would be 
+2. Run `./build.sh`
 
-`docker run -v "$PWD:$PWD" -w "$PWD" --name aipdocker -it aip:$(cat $(readlink -f VERSION)) a b c d e`
+3. Run `./run.sh`
 
-The ability to add stuff to the end of this command is pretty much the most important part because you're essentially saying at the start "Hey docker, I want you to link all the files of the folder I'm currently in and have them ready for me when I start this container, then I want you to this command" 
+4. Run `./stop.sh` if the planner keeps running and you can't stop it
 
-Here's a basic scenario
+### Advice for Windows and Mac users
 
-`docker run -v "$PWD:$PWD" -w "$PWD" --name aipdocker -it aip:$(cat $(readlink -f VERSION)) /bin/optic domain.pddl problem.pddl`
-
-You have a `domain.pddl` file and a `problem.pddl` file contained in the folder you're current in (on the command line). You want to run this domain on the `optic` planner. All planners are located in `/bin` (You can find each planner listed in the individual scripts for each one).
-
-Because OPTIC has a format like `/bin/optic <domain> <problem>` we would write what we wrote above
-
-`docker run -v "$PWD:$PWD" -w "$PWD" --name aipdocker -it aip:$(cat $(readlink -f VERSION))`
-
-Plus, the actual thing we want to run
-
-`/bin/optic domain.pddl problem.pddl`.
-
-### IMPORTANT
-
-in some cases, docker won't stop when you CTRL+C. if this happens, open a new tab and run `./dockerkill.sh` this will shut down any running planner instance. **If you close the window it'll just keep running in the background**
-
-### MetricFF
-
-You can run MetricFF using
-
-`./metricff.sh`
-
-### OPTIC
-
-You can run OPTIC using
-
-`./optic.sh`
-
-### SMTPlan
-
-you can run SMTPlan+ by running
-
-`./smtplan.sh`
-
-### Validate
-
-You can run validators validate program by running
-
-`./validate.sh`
+You can install Docker on Windows and Mac. The commands located inside `./build,sh` `./run.sh` and `./stop.sh` will all be available on Windows and Mac too, but the scripts as provided here won't run. Instead, just execute them line by line manually.
