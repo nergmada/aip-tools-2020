@@ -1,0 +1,1 @@
+sudo docker build --tag aip:$(cat $(readlink -f VERSION)) .
