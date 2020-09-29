@@ -22,27 +22,29 @@ Let's quickly go through the `student.Dockerfile` line by line
 
 This first line, pulls the latest image of the main Docker image created in `Dockerfile`. This is image is something I've created that automatically builds all the planners and planning tools you need and nearly instantly puts them at your disposal. **You won't need to change this line.**
 
-`COPY ./input /input`
+`COPY . /src`
 
-This tells docker to copy anything in the folder `./input` within this repo, into your container. We do this so that files, such as domains, problems and plans that are outside the container, can be copied into the container. In the `./input` folder of this repo, you should place any domains or problem files you wish to run, and any plans you wish to validate.
+This tells docker to copy anything in the folder we're currently in `.`, into your container. We do this so that files, such as domains, problems and plans that are outside the container, can be copied into the container. In the folder for this repo, you should place any domains or problem files you wish to run, and any plans you wish to validate.
 
-`WORKDIR /input`
+`WORKDIR /src`
 
-This tells docker to start by running in the input folder. When Docker copies the `./input` folder to `/input` it doesn't by default start you inside that folder. This command makes it so that when you run any commands inside docker, it'll start in this `/input` folder.
+This tells docker to start by running in the `/src` folder. When Docker copies everything in the repo folder into `/src` it doesn't by default start you inside that folder. This command makes it so that when you run any commands inside docker, it'll start in this `/src` folder. You can check this by setting `CMD` to `ls` (the `ls` function lists files on unix). e.g. `CMD ls`
 
-`CMD /bin/optic domain.pddl problem.pddl`
+`CMD optic domain.pddl problem.pddl`
 
-This is the most important line, and the only line you'll need to modify. the `CMD` tells docker what to run, when this container is executed. In this case, we are running `domain.pddl` and `problem.pddl` on the planner `optic` which is located in `/bin`. 
+This is the most important line, and the only line you'll need to modify. the `CMD` tells docker what to run, when this container is executed. In this case, we are running `domain.pddl` and `problem.pddl` on the planner `optic`.
 
-All planners and software you need are located in `/bin` I have listed what is available further down.
+All available planners and software are listed further down. Simply use the name shown further down to run a different piece of software.
 
-By default this line is set to `/bin/optic` but if you want to run for example, `metricff` you'll need to switch this to `/bin/metricff`. 
+Inside your this repo folder, we assume you've put a domain pddl file called `domain.pddl`. Let's say instead you put a domain called `driverlog.pddl`. You can change `domain.pddl` to `driverlog.pddl` to use the `driverlog.pddl` domain instead e.g.
 
-Inside your `./input` folder, we assume you've put a domain pddl file called `domain.pddl`. Let's say instead you put a domain called `driverlog.pddl`. You can change `domain.pddl` to `driverlog.pddl` to use the `driverlog.pddl` domain instead e.g.
+`CMD optic driverlog.pddl problem.pddl`
 
-`CMD /bin/optic driverlog.pddl problem.pddl`
+or maybe you've added a plan file `plan.txt` into this repo folder, you could validate it by doing
 
-**When you add domains to the input folder, you need to run build again**
+`CMD Validate driverlog.pddl problem.pddl plan.txt`
+
+**When you add domains to the repo folder, you need to run build again**
 
 ### Quick steps (You should read the detailed explanation before following this)
 
