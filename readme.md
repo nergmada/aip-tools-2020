@@ -65,17 +65,17 @@ Please note that this part of the command `$(cat $(readlink -f VERSION))` just c
 
 ### Available Programs in /bin
 
-`/bin/optic` allows you to run OPTIC. OPTIC is a Temporal Numeric planner designed in the early 2010s. It's predecessors POPF and COLIN will most likely be covered in lectures.
+`optic` allows you to run OPTIC. OPTIC is a Temporal Numeric planner designed in the early 2010s. It's predecessors POPF and COLIN will most likely be covered in lectures.
 
-`/bin/metricff` allows you to run a flavour of FF called `MetricFF`. This is a classical planner which is a precursor to many modern search strategies.
+`metricff` allows you to run a flavour of FF called `MetricFF`. This is a classical planner which is a precursor to many modern search strategies.
 
-`/bin/fd` allows you to run `FD` or Fast Downward. This is a classical planner which is the technical and theoretical basis for many if not all modern classical planning systems
+`fd` allows you to run `FD` or Fast Downward. This is a classical planner which is the technical and theoretical basis for many if not all modern classical planning systems
 
-`/bin/smtplan` allows you to run `SMTPlan+` a niche planner designed to handle expressive domains modelled in PDDL+ syntax.
+`SMTPlan` allows you to run `SMTPlan+` a niche planner designed to handle expressive domains modelled in PDDL+ syntax.
 
-`/bin/enhsp` allows you to run `ENHSP` a planner designed to handle expressive domains, particularly those with non-linear continuous numeric effects
+`enhsp` allows you to run `ENHSP` a planner designed to handle expressive domains, particularly those with non-linear continuous numeric effects
 
-`/bin/Validate` allows you to run `VAL`s `Validate` program. Validate is way to check the correctness of plans, independently of planners. Please not that `Validate` has a capital `V`
+`Validate` allows you to run `VAL`s `Validate` program. Validate is way to check the correctness of plans, independently of planners. Please not that `Validate` has a capital `V`
 
 
 
