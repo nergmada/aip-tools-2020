@@ -1,6 +1,6 @@
 # AI Planning Coursework tools 2020
 
-Hello and welcome!
+Hello!
 
 You're lucky enough to be on the AIP module at KCL in 2020, which means you've got myself Adam Green as your TA. In this repo you'll find a bunch of tools to get started with planning. This repo is provided as a convenience and is designed to get you up and running and ready to do the coursework, whatever the coursework may be.
 
